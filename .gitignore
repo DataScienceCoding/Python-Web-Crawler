@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 
 ~$Python-Web-Crawler.pptx
+.mypy_cache
