@@ -1,102 +1,103 @@
-# import json
-# import requests
-# from requests.exceptions import RequestException
-# import re
-# import time
-# import random
-
-
-# def get_one_page(url):
-#     try:
-#         response = requests.get(url)
-#         if response.status_code == 200:
-#             return response.text
-#         return None
-#     except RequestException:
-#         return None
-
-
-# def parse_one_page(html):
-#     pattern = re.compile('<dd>.*?board-index.*?>(\d+)</i>.*?data-src="(.*?)".*?name"><a'
-#                          + '.*?>(.*?)</a>.*?star">(.*?)</p>.*?releasetime">(.*?)</p>'
-#                          + '.*?integer">(.*?)</i>.*?fraction">(.*?)</i>.*?</dd>', re.S)
-#     items = re.findall(pattern, html)
-#     for item in items:
-#         yield {
-#             'index': item[0],
-#             'image': item[1],
-#             'title': item[2],
-#             'actor': item[3].strip()[3:],
-#             'time': item[4].strip()[5:],
-#             'score': item[5] + item[6]
-#         }
-
-
-# def write_html(offset, html):
-#     with open("code/{}.html".format(offset), mode='w+', encoding='utf-8') as f:
-#         f.write(html)
-
-
-# def write_result(content):
-#     with open('result.txt', 'a') as f:
-#         f.write(json.dumps(content, ensure_ascii=False) + '\n')
-
-
-# def main(offset):
-#     url = 'http://maoyan.com/board/4?offset=' + str(offset)
-#     html = get_one_page(url)
-#     write_html(offset, html)
-#     for item in parse_one_page(html):
-#         print(item)
-#         write_result(item)
-
-
-# if __name__ == '__main__':
-#     for i in range(10):
-#         main(offset=i * 10)
-#         time.sleep(random.randint(1, 4))
-
+import json
+import requests
+from requests.exceptions import RequestException
 import re
+import time
+import random
 
-content = 'Hello, my phone number is 13512345678 and email is carmeltop@qq.com, \
-    and my website is https://github.com/carmel.'
 
-result = re.search('(1[3456789]\d{9})', content, re.S)
-if result:
-    print(result.group())
-    print(result.group(1))
-    print(result.span(), '\n')
+def get_one_page(url):
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            response.encoding ='utf-8'
+            return response.text
+        return None
+    except RequestException:
+        return None
 
-result = re.search('([a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+))+', content, re.S)
-if result:
-    print(result.group(1))
 
-html = '''<div id="songs-list">
-    <h2 class="title">经典老歌</h2>
-    <p class="introduction">
-        经典老歌列表
-    </p>
-    <ul id="list" class="list-group">
-        <li data-view="2">一路上有你</li>
-        <li data-view="7">
-            <a href="/2.mp3" singer="任贤齐">沧海一声笑</a>
-        </li>
-        <li data-view="4" class="active">
-            <a href="/3.mp3" singer="齐秦">往事随风</a>
-        </li>
-        <li data-view="6"><a href="/4.mp3" singer="beyond">光辉岁月</a></li>
-        <li data-view="5"><a href="/5.mp3" singer="陈慧琳">记事本</a></li>
-        <li data-view="5">
-            <a href="/6.mp3" singer="邓丽君"><i class="fa fa-user"></i>但愿人长久</a>
-        </li>
-    </ul>
-</div>'''
+def parse_one_page(html):
+    pattern = re.compile('<dd>.*?board-index.*?>(\d+)</i>.*?data-src="(.*?)".*?name"><a'
+                         + '.*?>(.*?)</a>.*?star">(.*?)</p>.*?releasetime">(.*?)</p>'
+                         + '.*?integer">(.*?)</i>.*?fraction">(.*?)</i>.*?</dd>', re.S)
+    items = re.findall(pattern, html)
+    for item in items:
+        yield {
+            'index': item[0],
+            'image': item[1],
+            'title': item[2],
+            'actor': item[3].strip()[3:],
+            'time': item[4].strip()[5:],
+            'score': item[5] + item[6]
+        }
 
-results = re.findall('<li.*?href="(.*?)".*?singer="(.*?)">(.*?)</a>', html, re.S)
-print(results)
-for result in results:
-    print(result)
-    print(result[0], result[1], result[2], '\n')
+
+def write_html(offset, html):
+    with open("code/{}.html".format(offset), mode='w+', encoding='utf-8') as f:
+        f.write(html)
+
+
+def write_result(content):
+    with open('result.txt', 'a') as f:
+        f.write(json.dumps(content, ensure_ascii=False) + '\n')
+
+
+def main(offset):
+    url = 'http://maoyan.com/board/4?offset=' + str(offset)
+    html = get_one_page(url)
+    write_html(offset, html)
+    for item in parse_one_page(html):
+        print(item)
+        write_result(item)
+
+
+if __name__ == '__main__':
+    for i in range(10):
+        main(offset=i * 10)
+        time.sleep(random.randint(1, 4))
+
+# import re
+
+# content = 'Hello, my phone number is 13512345678 and email is carmeltop@qq.com, \
+#     and my website is https://github.com/carmel.'
+
+# result = re.search('(1[3456789]\d{9})', content, re.S)
+# if result:
+#     print(result.group())
+#     print(result.group(1))
+#     print(result.span(), '\n')
+
+# result = re.search('([a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+))+', content, re.S)
+# if result:
+#     print(result.group(1))
+
+# html = '''<div id="songs-list">
+#     <h2 class="title">经典老歌</h2>
+#     <p class="introduction">
+#         经典老歌列表
+#     </p>
+#     <ul id="list" class="list-group">
+#         <li data-view="2">一路上有你</li>
+#         <li data-view="7">
+#             <a href="/2.mp3" singer="任贤齐">沧海一声笑</a>
+#         </li>
+#         <li data-view="4" class="active">
+#             <a href="/3.mp3" singer="齐秦">往事随风</a>
+#         </li>
+#         <li data-view="6"><a href="/4.mp3" singer="beyond">光辉岁月</a></li>
+#         <li data-view="5"><a href="/5.mp3" singer="陈慧琳">记事本</a></li>
+#         <li data-view="5">
+#             <a href="/6.mp3" singer="邓丽君"><i class="fa fa-user"></i>但愿人长久</a>
+#         </li>
+#     </ul>
+# </div>'''
+
+# results = re.findall('<li.*?href="(.*?)".*?singer="(.*?)">(.*?)</a>', html, re.S)
+# print(results)
+# for result in results:
+#     print(result)
+#     print(result[0], result[1], result[2], '\n')
 
 # html = re.sub('<a.*?>|</a>', '', html)
 # print(html)
