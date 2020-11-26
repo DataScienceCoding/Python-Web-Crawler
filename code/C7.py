@@ -9,7 +9,7 @@ from selenium.webdriver.chrome.options import Options
 
 def browserwraper(*args):
     opts = Options()
-    opts.add_argument('--headless')
+    # opts.add_argument('--headless')
     opts.add_argument('--disable-gpu')
     for arg in args:
         opts.add_argument(arg)
@@ -23,6 +23,8 @@ try:
     wait = WebDriverWait(browser, 35)
     classname = 'ExploreHomePage-roundtables'
     wait.until(ec.presence_of_element_located((By.CLASS_NAME, classname)))
+    search = browser.find_element_by_css_selector('input[aria-activedescendant="AutoComplete2--1"]')
+    print(search.get_attribute('placeholder'))
     content = browser.find_element_by_class_name(classname)
     roundtable = browser.find_elements_by_class_name('ExploreHomePage-roundtableCard')
     for i in roundtable:
