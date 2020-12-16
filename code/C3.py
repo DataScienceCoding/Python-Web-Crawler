@@ -10,7 +10,7 @@ def get_one_page(url):
     try:
         response = requests.get(url)
         if response.status_code == 200:
-            response.encoding ='utf-8'
+            response.encoding = 'utf-8'
             return response.text
         return None
     except RequestException:
